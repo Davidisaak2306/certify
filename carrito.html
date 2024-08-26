@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="carrito.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+</head>
+<body class="fondo">
+    <h2 class="titulo">Carrito de Compras</h2>
+    <ul id="carrito-lista" class="list-group mb-3"></ul>
+    <p id="carrito-total" class="lead"></p>
+    <a href="pagos.html">
+    <button id="pagar-ahora" class="btn btn-success"> Pagar Ahora
+    </button>
+</a>
+<a href="certificaciones.html">
+    <button id="pagar-ahora" class="btn btn-success"> Atras
+    </button>
+</a>
+    
+
+    <script>
+        // Obtén el carrito actual
+        const carrito = localStorage.getItem('carrito');
+
+        // Si el carrito existe, muestra los productos
+        if (carrito) {
+            const carritoActual = JSON.parse(carrito);
+            const carritoLista = document.getElementById('carrito-lista');
+            const carritoTotal = document.getElementById('carrito-total');
+
+            carritoActual.forEach((producto, index) => {
+                const listaItem = document.createElement('li');
+                listaItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                listaItem.innerHTML = `
+                    ${producto.nombre} x ${producto.cantidad} = $${producto.precio * producto.cantidad}
+                    <button class="btn btn-danger btn-sm ms-2" data-index="${index}">Eliminar</button>
+                `;
+                carritoLista.appendChild(listaItem);
+            });
+
+            const total = carritoActual.reduce((acumulado, producto) => acumulado + producto.precio * producto.cantidad, 0);
+            carritoTotal.textContent = `Total: $${total}`;
+
+            // Agrega evento para eliminar productos
+            carritoLista.addEventListener('click', (event) => {
+                if (event.target.classList.contains('btn-danger')) {
+                    const index = event.target.getAttribute('data-index');
+                    eliminarProducto(index);
+                }
+            });
+        }
+
+        function eliminarProducto(index) {
+            let carrito = JSON.parse(localStorage.getItem('carrito'));
+            carrito.splice(index, 1);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            window.location.reload(); // Recarga la página para mostrar el carrito actualizado
+        }
+
+        // Botón de pagar ahora
+        document.getElementById('pagar-ahora').addEventListener('click', () => {
+            alert('Proceso de pago en desarrollo.'); // Aquí puedes agregar la lógica de pago
+        });
+    </script>
+   
+</body>
+</html>

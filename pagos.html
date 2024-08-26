@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PagosCertify</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=AdOUY5hJNsI5qI9ANXmy4sbXUHpqV4epH_koyJGvU-9KWwvVoEjAD9slpDOFp8BDced1zchMnaKtCylD&currency=MXN"></script>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="stylesheet" href="pago.css">
+</head>
+<body class="back">
+    <div class="button-container">
+        <a href="#" class="button type--C">
+            <div class="button__line"></div>
+            <div class="button__line"></div>
+            <span class="letra"></span>
+            <div class="button__drow1"></div>
+            <div class="button__drow2"></div>
+        </a>
+    </div>
+
+    <div id="paypal-button-container" class="paypal-button-container"></div>
+    
+    <script>
+        paypal.Buttons({
+            style: {
+                color: 'blue'
+            },
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '7600' // Monto a cobrar
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(detalles) {
+                    console.log(detalles);
+                    // Llama a la función para enviar correo
+                    enviarCorreo(detalles.payer.email_address, 7600);
+                });
+            },
+            oncancel: function(data) {
+                alert("Pago cancelado");
+                console.log(data);
+            }
+        }).render('#paypal-button-container');
+
+        function enviarCorreo(email, total) {
+            fetch('http://localhost:3001/enviar-correo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email, total: total })
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+                alert('Correo de confirmación enviado');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+<a href="index.html">
+
+  <button class="btn">atras</button>
+</a>
+  
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
